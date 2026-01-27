@@ -1,0 +1,51 @@
+name : Integration
+
+on:
+    push:
+        branches : ["main"]
+jobs:
+    build:
+        runs-on : ubuntu-latest
+        
+        steps :
+            - name : Chechout
+              uses : actions/checkout@v4
+
+            - name : Install Dependencies
+              working-directory : client
+              run : npm install
+
+            - name : build
+              working-directory : client
+              run : npm run build
+
+            - name : Install Dependencies
+              working-directory : server
+              run : npm install
+
+            - name : build
+              working-directory : server
+              run : npm run test
+
+    unit-test :
+        runs-on : ubuntu-latest
+
+        steps :
+            - name : Chechout
+              uses : actions/checkout@v4
+
+            - name : Install Dependencies
+              working-directory : client
+              run : npm install
+
+            - name : build
+              working-directory : client
+              run : npm run build
+              
+            - name : Install Dependencies
+              working-directory : server
+              run : npm install
+
+            - name : build
+              working-directory : server
+              run : npm run test
