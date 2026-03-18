@@ -42,6 +42,10 @@ jobs:
         working-directory: client
         run: npm run test:integration
 
+      - name: Install server dependencies for E2E
+        working-directory: server
+        run: npm ci
+
       - name: Run E2E tests
         working-directory: client
         run: npm run test:e2e
