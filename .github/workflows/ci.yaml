@@ -26,6 +26,10 @@ jobs:
         working-directory: client
         run: npm ci
 
+      - name: Install Playwright Browsers
+        working-directory: client
+        run: npx playwright install --with-deps
+
       - name: Run linter
         working-directory: client
         run: npm run lint
@@ -33,6 +37,14 @@ jobs:
       - name: Run unit tests
         working-directory: client
         run: npm run test -- --run
+
+      - name: Run client integration tests
+        working-directory: client
+        run: npm run test:integration
+
+      - name: Run E2E tests
+        working-directory: client
+        run: npm run test:e2e
 
       - name: Build
         working-directory: client
@@ -61,6 +73,10 @@ jobs:
         working-directory: server
         run: npm run lint
 
-      - name: Run tests
+      - name: Run unit tests
         working-directory: server
         run: npm run test
+
+      - name: Run integration tests
+        working-directory: server
+        run: npm run test:integration
