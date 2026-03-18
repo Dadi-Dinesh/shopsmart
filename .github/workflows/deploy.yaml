@@ -18,28 +18,42 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "Starting deployment to AWS EC2..."
+            echo "Starting idempotent deployment to AWS EC2..."
             
-            # Navigate to standard deployment directory (adjust if different on your instance)
+            # 1. Create deployment directory idempotently (doesn't fail if exists)
+            mkdir -p /var/www/shopsmart
             cd /var/www/shopsmart
             
-            # Pull latest changes
-            echo "Pulling latest code from main branch..."
-            git pull origin main
+            # 2. Safely clone OR pull depending on current state
+            if [ -d ".git" ]; then
+              echo "Repository exists. Pulling latest code..."
+              # Hard reset ensures it doesn't fail due to local modifications
+              git reset --hard HEAD
+              git pull origin main
+            else
+              echo "Repository missing. Cloning..."
+              git clone https://github.com/Dadi-Dinesh/shopsmart.git .
+            fi
             
-            # Build the React Frontend Client
+            # 3. Build the React Frontend Client
             echo "Building frontend client..."
             cd client
             npm ci
             npm run build
             
-            # Install Backend Server dependencies and restart the service
-            echo "Installing backend dependencies and restarting service..."
+            # 4. Install Backend Server dependencies
+            echo "Installing backend dependencies..."
             cd ../server
             npm ci
             
-            # Use PM2 to restart the app for zero-downtime deployment.
-            # If the process isn't running yet, it will start it.
-            pm2 restart shopsmart-backend || pm2 start src/index.js --name "shopsmart-backend"
+            # 5. Restart Backend Process Idempotently
+            # Check if PM2 is currently managing the process
+            if pm2 describe shopsmart-backend > /dev/null 2>&1; then
+              echo "Restarting existing PM2 process..."
+              pm2 restart shopsmart-backend
+            else
+              echo "Starting new PM2 process..."
+              pm2 start src/index.js --name "shopsmart-backend"
+            fi
             
             echo "Deployment completed successfully!"
