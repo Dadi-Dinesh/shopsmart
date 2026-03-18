@@ -1,0 +1,45 @@
+name: Continuous Deployment (AWS EC2)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH and Deploy application
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Starting deployment to AWS EC2..."
+            
+            # Navigate to standard deployment directory (adjust if different on your instance)
+            cd /var/www/shopsmart
+            
+            # Pull latest changes
+            echo "Pulling latest code from main branch..."
+            git pull origin main
+            
+            # Build the React Frontend Client
+            echo "Building frontend client..."
+            cd client
+            npm ci
+            npm run build
+            
+            # Install Backend Server dependencies and restart the service
+            echo "Installing backend dependencies and restarting service..."
+            cd ../server
+            npm ci
+            
+            # Use PM2 to restart the app for zero-downtime deployment.
+            # If the process isn't running yet, it will start it.
+            pm2 restart shopsmart-backend || pm2 start src/index.js --name "shopsmart-backend"
+            
+            echo "Deployment completed successfully!"
