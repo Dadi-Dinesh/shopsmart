@@ -1,51 +1,66 @@
-name : Integration
+name: CI
 
 on:
-    push:
-        branches : ["main"]
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
 jobs:
-    build:
-        runs-on : ubuntu-latest
-        
-        steps :
-            - name : Chechout
-              uses : actions/checkout@v4
+  client:
+    name: Client – Lint, Test & Build
+    runs-on: ubuntu-latest
 
-            - name : Install Dependencies
-              working-directory : client
-              run : npm install
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name : build
-              working-directory : client
-              run : npm run build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: client/package-lock.json
 
-            - name : Install Dependencies
-              working-directory : server
-              run : npm install
+      - name: Install dependencies
+        working-directory: client
+        run: npm ci
 
-            - name : build
-              working-directory : server
-              run : npm run test
+      - name: Run linter
+        working-directory: client
+        run: npm run lint
 
-    unit-test :
-        runs-on : ubuntu-latest
+      - name: Run unit tests
+        working-directory: client
+        run: npm run test -- --run
 
-        steps :
-            - name : Chechout
-              uses : actions/checkout@v4
+      - name: Build
+        working-directory: client
+        run: npm run build
 
-            - name : Install Dependencies
-              working-directory : client
-              run : npm install
+  server:
+    name: Server – Lint & Test
+    runs-on: ubuntu-latest
 
-            - name : build
-              working-directory : client
-              run : npm run build
-              
-            - name : Install Dependencies
-              working-directory : server
-              run : npm install
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name : build
-              working-directory : server
-              run : npm run test
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: Run linter
+        working-directory: server
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: server
+        run: npm run test
