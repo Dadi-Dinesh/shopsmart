@@ -1,2 +1,2 @@
-spec: "tests/**/*.test.js"
+spec: 'tests/**/*.test.js'
 recursive: true

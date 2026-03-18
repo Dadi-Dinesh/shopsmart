@@ -4,9 +4,7 @@ const app = require('../src/app');
 
 describe('Integration: Middleware Chain', () => {
     it('should include CORS headers on API responses', async () => {
-        const res = await request(app)
-            .get('/api/health')
-            .set('Origin', 'http://localhost:3000');
+        const res = await request(app).get('/api/health').set('Origin', 'http://localhost:3000');
         expect(res.headers).to.have.property('access-control-allow-origin');
     });
 

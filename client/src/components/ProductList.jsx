@@ -8,17 +8,17 @@ function ProductList() {
     useEffect(() => {
         const apiUrl = import.meta.env.VITE_API_URL || '';
         fetch(`${apiUrl}/api/products`)
-            .then(res => {
+            .then((res) => {
                 if (!res.ok) {
                     throw new Error('Failed to fetch products');
                 }
                 return res.json();
             })
-            .then(data => {
+            .then((data) => {
                 setProducts(data);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 setError(err.message);
                 setLoading(false);
             });
@@ -31,7 +31,7 @@ function ProductList() {
         <div className="product-list">
             <h2>Products</h2>
             <ul className="products">
-                {products.map(product => (
+                {products.map((product) => (
                     <li key={product.id} className="product-item">
                         <strong>{product.name}</strong> - ${product.price}
                         <br />

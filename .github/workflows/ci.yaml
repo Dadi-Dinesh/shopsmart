@@ -30,6 +30,10 @@ jobs:
         working-directory: client
         run: npx playwright install --with-deps
 
+      - name: Run code formatting check
+        working-directory: client
+        run: npm run format:check
+
       - name: Run linter
         working-directory: client
         run: npm run lint
@@ -72,6 +76,10 @@ jobs:
       - name: Install dependencies
         working-directory: server
         run: npm ci
+
+      - name: Run code formatting check
+        working-directory: server
+        run: npm run format:check
 
       - name: Run linter
         working-directory: server

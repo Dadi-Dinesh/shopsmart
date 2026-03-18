@@ -7,12 +7,15 @@ This project uses a comprehensive testing strategy covering Unit, Integration, a
 We use **Vitest** as the test runner and **MSW (Mock Service Worker)** to mock API requests. This allows us to test components in isolation without relying on a running backend.
 
 ### Running Unit Tests
+
 ```bash
 npm test
 ```
+
 This runs all tests in `src/` ending with `.test.jsx` or `.test.js`.
 
 ### Key Files
+
 - `src/setupTests.js`: Configures the testing environment and MSW server.
 - `src/mocks/handlers.js`: Defines the API mock handlers.
 - `src/mocks/server.js`: Sets up the MSW server for Node.js.
@@ -22,20 +25,25 @@ This runs all tests in `src/` ending with `.test.jsx` or `.test.js`.
 We use **Playwright** for E2E testing. These tests run the application in a real browser and verify end-to-user functionality.
 
 ### Running E2E Tests
+
 ```bash
 npx playwright test
 ```
+
 Or using the npm script:
+
 ```bash
 npm run test:e2e
 ```
 
 To run with UI mode (interactive):
+
 ```bash
 npm run test:e2e:ui
 ```
 
 ### Key Files
+
 - `playwright.config.js`: Playwright configuration.
 - `e2e/`: Directory containing E2E test files.
 
@@ -47,6 +55,7 @@ npm run test:e2e:ui
 ## 4. CI/CD
 
 GitHub Actions is configured in `.github/workflows/ci.yml` to automatically run:
+
 1. Linting
 2. Unit/Integration Tests
 3. E2E Tests

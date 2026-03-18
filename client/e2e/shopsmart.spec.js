@@ -18,7 +18,7 @@ test('Simulate complete user flow: Login -> Action -> Result', async ({ page }) 
     await expect(page.getByRole('heading', { name: 'ShopSmart', exact: true })).toBeVisible();
 
     // 4. Result: Verify actual backend integration is working and displaying data properly
-    
+
     // Check Health Status Section
     await expect(page.getByRole('heading', { name: 'Backend Status' })).toBeVisible();
     await expect(page.getByText('Status: ok')).toBeVisible();
@@ -32,6 +32,6 @@ test('Simulate complete user flow: Login -> Action -> Result', async ({ page }) 
 
     await expect(page.getByText('Running Shoes')).toBeVisible();
     await expect(page.getByText('$59.99')).toBeVisible();
-    
+
     await expect(page.getByText('Coffee Maker')).toBeVisible();
 });

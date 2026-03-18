@@ -5,7 +5,7 @@ module.exports = {
         es2021: true,
         mocha: true,
     },
-    extends: ['eslint:recommended'],
+    extends: ['eslint:recommended', 'plugin:prettier/recommended'],
     parserOptions: {
         ecmaVersion: 'latest',
     },

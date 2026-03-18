@@ -27,7 +27,7 @@ describe('App', () => {
         // Override the handler to return a 500 error for this specific test
         server.use(
             http.get('*/api/health', () => {
-                return new HttpResponse(null, { status: 500 })
+                return new HttpResponse(null, { status: 500 });
             })
         );
 
@@ -42,7 +42,7 @@ describe('App', () => {
         expect(screen.getByText(/Loading backend status.../i)).toBeInTheDocument();
 
         // Use a short timeout to ensure it stays that way (optional, but good for verification)
-        await waitFor(() => { }, { timeout: 1000 });
+        await waitFor(() => {}, { timeout: 1000 });
         expect(screen.getByText(/Loading backend status.../i)).toBeInTheDocument();
     });
 });

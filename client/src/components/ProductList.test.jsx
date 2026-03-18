@@ -24,7 +24,7 @@ describe('ProductList', () => {
     it('renders error message on fetch failure', async () => {
         server.use(
             http.get('*/api/products', () => {
-                return new HttpResponse(null, { status: 500 })
+                return new HttpResponse(null, { status: 500 });
             })
         );
 
