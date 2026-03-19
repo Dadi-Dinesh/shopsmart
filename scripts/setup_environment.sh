@@ -37,10 +37,20 @@ else
     echo "PM2 is already installed. Skipping."
 fi
 
-# 5. Create deployment directory idempotently 
-# 'mkdir -p' succeeds gracefully even if the directory already exists.
-echo "5. Preparing deployment directory..."
-sudo mkdir -p /var/www/shopsmart
+# 5. Install Nginx Idempotently
+if ! command -v nginx &> /dev/null; then
+    echo "Nginx not found. Installing Nginx..."
+    sudo apt-get install -y nginx
+    sudo systemctl enable nginx
+    sudo systemctl start nginx
+else
+    echo "Nginx is already installed. Skipping."
+fi
+
+# 6. Create deployment directory idempotently 
+echo "6. Preparing deployment directories..."
+sudo mkdir -p /var/www/shopsmart/client
+sudo mkdir -p /var/www/shopsmart/server
 
 # Ensure the current ubuntu user owns the directory to prevent permission errors
 sudo chown -R $USER:$USER /var/www/shopsmart
