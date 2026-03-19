@@ -37,41 +37,20 @@ jobs:
 
       - name: Deploy ShopSmart to EC2
         run: |
-            # Copy the BUILT dist folder over SCP 
+            # Copy all deployment artifacts over SCP
             scp -i ~/.ssh/ec2_key.pem -r client/dist ubuntu@${{ secrets.EC2_HOST }}:/tmp/client_dist
-            
-            # Copy nginx.conf over SCP
             scp -i ~/.ssh/ec2_key.pem infra/nginx.conf ubuntu@${{ secrets.EC2_HOST }}:/tmp/nginx.conf
-
-            # Copy server folder over SCP (excluding node_modules)
+            
+            # Pack and copy server code
             tar -czf server.tar.gz --exclude=node_modules server
             scp -i ~/.ssh/ec2_key.pem server.tar.gz ubuntu@${{ secrets.EC2_HOST }}:/tmp/server.tar.gz
+            
+            # Copy the deployment script itself
+            scp -i ~/.ssh/ec2_key.pem scripts/deploy_app.sh ubuntu@${{ secrets.EC2_HOST }}:/tmp/deploy_app.sh
 
-            # Replace the application folder with the fresh build and apply Nginx config
+            # Execute the deployment script on the server
             ssh -i ~/.ssh/ec2_key.pem ubuntu@${{ secrets.EC2_HOST }} "
-            # Prepare frontend
-            sudo mkdir -p /var/www/shopsmart/client
-            sudo rm -rf /var/www/shopsmart/client/* &&
-            sudo cp -r /tmp/client_dist/* /var/www/shopsmart/client/ &&
-            sudo rm -rf /tmp/client_dist &&
-
-            # Prepare server
-            sudo mkdir -p /var/www/shopsmart/server
-            sudo rm -rf /var/www/shopsmart/server/* &&
-            tar -xzf /tmp/server.tar.gz -C /tmp &&
-            sudo cp -r /tmp/server/* /var/www/shopsmart/server/ &&
-            sudo rm -rf /tmp/server.tar.gz /tmp/server &&
-            
-            # Install server dependencies and start/restart with PM2
-            cd /var/www/shopsmart/server &&
-            npm install --production &&
-            pm2 delete shopsmart-backend || true &&
-            pm2 start src/index.js --name shopsmart-backend &&
-
-            # Apply Nginx configuration
-            sudo mv /tmp/nginx.conf /etc/nginx/sites-available/shopsmart &&
-            sudo ln -sf /etc/nginx/sites-available/shopsmart /etc/nginx/sites-enabled/default &&
-            
-            # Restart Nginx
-            sudo systemctl restart nginx
+            chmod +x /tmp/deploy_app.sh &&
+            /tmp/deploy_app.sh &&
+            rm /tmp/deploy_app.sh
             "
