@@ -2,43 +2,36 @@ import { useState, useEffect } from 'react';
 
 function ProductList() {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const apiUrl = import.meta.env.VITE_API_URL || '';
         fetch(`${apiUrl}/api/products`)
             .then((res) => {
-                if (!res.ok) {
-                    throw new Error('Failed to fetch products');
-                }
+                if (!res.ok) throw new Error('Failed to fetch products');
                 return res.json();
             })
-            .then((data) => {
-                setProducts(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
+            .then((data) => setProducts(data))
+            .catch((err) => setError(err.message));
     }, []);
 
-    if (loading) return <div aria-label="loading">Loading products...</div>;
-    if (error) return <div role="alert">Error: {error}</div>;
+    if (error) return <div style={{ color: '#ef4444', padding: '1rem' }}>Error: {error}</div>;
+    if (!products.length) return <div className="loading-pulse">Loading products...</div>;
 
     return (
-        <div className="product-list">
-            <h2>Products</h2>
-            <ul className="products">
+        <div>
+            <div className="section-header">
+                <h2>Products</h2>
+            </div>
+            <div className="product-grid">
                 {products.map((product) => (
-                    <li key={product.id} className="product-item">
-                        <strong>{product.name}</strong> - ${product.price}
-                        <br />
-                        <small>{product.category}</small>
-                    </li>
+                    <div key={product.id} className="product-card">
+                        <div className="product-category">{product.category}</div>
+                        <h3 className="product-name">{product.name}</h3>
+                        <div className="product-price">${product.price.toFixed(2)}</div>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 }

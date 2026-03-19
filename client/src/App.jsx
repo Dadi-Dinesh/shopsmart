@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-
 import ProductList from './components/ProductList';
 
 function App() {
@@ -18,76 +17,98 @@ function App() {
 
     if (!isLoggedIn) {
         return (
-            <div className="container login-container">
-                <h1>ShopSmart Login</h1>
-                <div className="card" style={{ maxWidth: '400px', margin: '0 auto' }}>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            setIsLoggedIn(true);
-                        }}
-                    >
-                        <div style={{ marginBottom: '1rem' }}>
-                            <input
-                                type="text"
-                                placeholder="Username (demo)"
-                                required
-                                style={{
-                                    padding: '0.5rem',
-                                    width: '100%',
-                                    boxSizing: 'border-box',
-                                }}
-                            />
-                        </div>
-                        <div style={{ marginBottom: '1rem' }}>
-                            <input
-                                type="password"
-                                placeholder="Password (demo)"
-                                required
-                                style={{
-                                    padding: '0.5rem',
-                                    width: '100%',
-                                    boxSizing: 'border-box',
-                                }}
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            style={{ padding: '0.5rem 1rem', cursor: 'pointer', width: '100%' }}
+            <div className="app-container">
+                <main className="center-wrapper">
+                    <div className="login-brand">
+                        <h1 className="sr-only">ShopSmart Login</h1>
+                        {/* Visual branding */}
+                        <div
+                            style={{
+                                fontSize: '2rem',
+                                fontWeight: 700,
+                                letterSpacing: '-0.05em',
+                                color: '#0f172a',
+                            }}
                         >
-                            Secure Login
-                        </button>
-                    </form>
-                </div>
+                            ShopSmart
+                        </div>
+                        <p>Sign in to your dashboard</p>
+                    </div>
+
+                    <div className="card card-sm">
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                setIsLoggedIn(true);
+                            }}
+                        >
+                            <div className="form-group">
+                                <label className="sr-only" htmlFor="username">
+                                    Username
+                                </label>
+                                <input
+                                    id="username"
+                                    type="text"
+                                    className="input-field"
+                                    placeholder="Username (demo)"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="sr-only" htmlFor="password">
+                                    Password
+                                </label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    className="input-field"
+                                    placeholder="Password (demo)"
+                                    required
+                                />
+                            </div>
+                            <button type="submit" className="btn-primary">
+                                Secure Login
+                            </button>
+                        </form>
+                    </div>
+                </main>
             </div>
         );
     }
 
     return (
-        <div className="container dashboard-container">
-            <h1>ShopSmart</h1>
-            <div className="card">
-                <h2>Backend Status</h2>
-                {data ? (
-                    <div>
-                        <p>
-                            Status: <span className="status-ok">{data.status}</span>
-                        </p>
-                        <p>Message: {data.message}</p>
-                        <p>Timestamp: {data.timestamp}</p>
+        <div className="app-container">
+            <header className="dashboard-header">
+                <h1>ShopSmart</h1>
+                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                    Admin Dashboard
+                </div>
+            </header>
+
+            <main className="dashboard-main">
+                <section className="status-section">
+                    <h2>Backend Status</h2>
+                    <div className="status-widget">
+                        <div className="status-dot"></div>
+                        <div className="status-content">
+                            {data ? (
+                                <>
+                                    <p>
+                                        Status: <strong>{data.status}</strong>
+                                    </p>
+                                    <p>{data.message}</p>
+                                </>
+                            ) : (
+                                <span className="loading-pulse">Loading backend status...</span>
+                            )}
+                        </div>
                     </div>
-                ) : (
-                    <p>Loading backend status...</p>
-                )}
-            </div>
+                </section>
 
-            <div className="card">
-                <ProductList />
-            </div>
-
-            <p className="hint">
-                Edit <code>src/App.jsx</code> and save to test HMR
-            </p>
+                <section>
+                    <ProductList />
+                </section>
+            </main>
         </div>
     );
 }
