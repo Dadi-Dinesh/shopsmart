@@ -6,8 +6,8 @@
     "scripts": {
         "start": "node src/index.js",
         "dev": "nodemon src/index.js",
-        "test": "mocha",
-        "test:integration": "mocha 'tests/integration.test.js'",
+        "test": "mocha --exit",
+        "test:integration": "mocha 'tests/integration.test.js' --exit",
         "lint": "eslint . --max-warnings 0",
         "format": "prettier --write .",
         "format:check": "prettier --check ."
