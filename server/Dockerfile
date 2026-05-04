@@ -9,7 +9,7 @@ RUN npm ci
 # Copy application files
 COPY . .
 
-# Assume the backend listens on PORT environment variable, defaults to 5000 if needed
-EXPOSE 5000
+# The backend port was changed to 5001 in docker-compose.yml
+EXPOSE 5001
 
 CMD ["npm", "start"]
