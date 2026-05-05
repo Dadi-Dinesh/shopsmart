@@ -29,6 +29,10 @@ resource "aws_ecr_repository" "shopsmart_server" {
     Project   = "ShopSmart"
     ManagedBy = "Terraform"
   }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "aws_ecr_repository" "shopsmart_client" {
@@ -43,6 +47,10 @@ resource "aws_ecr_repository" "shopsmart_client" {
   tags = {
     Project   = "ShopSmart"
     ManagedBy = "Terraform"
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
   }
 }
 
@@ -79,6 +87,10 @@ resource "aws_ecs_cluster" "shopsmart" {
   tags = {
     Project   = "ShopSmart"
     ManagedBy = "Terraform"
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
   }
 }
 
@@ -192,6 +204,10 @@ resource "aws_ecs_service" "shopsmart_server" {
     Project   = "ShopSmart"
     ManagedBy = "Terraform"
   }
+
+  lifecycle {
+    ignore_changes = [task_definition, desired_count, tags]
+  }
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -263,6 +279,10 @@ resource "aws_ecs_service" "shopsmart_client" {
   tags = {
     Project   = "ShopSmart"
     ManagedBy = "Terraform"
+  }
+
+  lifecycle {
+    ignore_changes = [task_definition, desired_count, tags]
   }
 }
 

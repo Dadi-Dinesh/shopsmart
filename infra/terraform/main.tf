@@ -28,6 +28,11 @@ resource "aws_s3_bucket" "shopsmart" {
     Environment = var.environment
     ManagedBy   = "Terraform"
   }
+
+  lifecycle {
+    prevent_destroy = false
+    ignore_changes  = [tags]
+  }
 }
 
 # ── Versioning ──────────────────────────────────────────────────────────────
