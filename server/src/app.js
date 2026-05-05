@@ -16,6 +16,11 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Health check for Docker HEALTHCHECK / ECS
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
+
 // Root Route (optional, just to show something)
 app.get('/', (req, res) => {
     res.send('ShopSmart Backend Service');
