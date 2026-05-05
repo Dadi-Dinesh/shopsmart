@@ -124,6 +124,31 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Terraform Import Existing Resources
+        run: |
+          echo "Importing existing resources into Terraform state..."
+          # S3
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket.shopsmart shopsmart-artifacts-2026 || true
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket_versioning.shopsmart shopsmart-artifacts-2026 || true
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket_server_side_encryption_configuration.shopsmart shopsmart-artifacts-2026 || true
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket_public_access_block.shopsmart shopsmart-artifacts-2026 || true
+          # ECR
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_ecr_repository.shopsmart_server shopsmart-server || true
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_ecr_repository.shopsmart_client shopsmart-client || true
+          # CloudWatch
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_cloudwatch_log_group.shopsmart_server /ecs/shopsmart-server || true
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_cloudwatch_log_group.shopsmart_client /ecs/shopsmart-client || true
+          # ECS Cluster
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_ecs_cluster.shopsmart shopsmart-cluster || true
+          # Security Group
+          SG_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=shopsmart-ecs-sg" --query 'SecurityGroups[0].GroupId' --output text 2>/dev/null || echo "")
+          if [ -n "$SG_ID" ] && [ "$SG_ID" != "None" ]; then
+            terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_security_group.ecs_service "$SG_ID" || true
+          fi
+          # ECS Services
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_ecs_service.shopsmart_server shopsmart-cluster/shopsmart-server-service || true
+          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_ecs_service.shopsmart_client shopsmart-cluster/shopsmart-client-service || true
+
       - name: Terraform Format Check
         run: terraform fmt -check
 
