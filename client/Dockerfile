@@ -33,6 +33,10 @@ EXPOSE 3000
 HEALTHCHECK --interval=15s --timeout=5s --retries=3 \
   CMD wget -qO- http://localhost:3000/health || exit 1
 
+# Fix permissions for non-root nginx user
+RUN chown -R nginx:nginx /var/cache/nginx /var/log/nginx /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && chown nginx:nginx /var/run/nginx.pid
+
 # Run as non-root user
 USER nginx
 
