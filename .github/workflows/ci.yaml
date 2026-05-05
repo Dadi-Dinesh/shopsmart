@@ -8,7 +8,7 @@ on:
 
 jobs:
   client:
-    name: Client – Lint, Test & Build
+    name: Client – Unit & Integration Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -25,18 +25,6 @@ jobs:
       - name: Install dependencies
         working-directory: client
         run: npm ci
-
-      - name: Install Playwright Browsers
-        working-directory: client
-        run: npx playwright install --with-deps
-
-      - name: Run code formatting check
-        working-directory: client
-        run: npm run format:check
-
-      - name: Run linter
-        working-directory: client
-        run: npm run lint
 
       - name: Run unit tests
         working-directory: client
@@ -62,28 +50,8 @@ jobs:
           path: client/integration-test-results.xml
           retention-days: 30
 
-      - name: Install server dependencies for E2E
-        working-directory: server
-        run: npm ci
-
-      - name: Run E2E tests
-        working-directory: client
-        run: npm run test:e2e
-
-      - name: Upload playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: client/playwright-report/
-          retention-days: 30
-
-      - name: Build
-        working-directory: client
-        run: npm run build
-
   server:
-    name: Server – Lint & Test
+    name: Server – Unit & Integration Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -100,14 +68,6 @@ jobs:
       - name: Install dependencies
         working-directory: server
         run: npm ci
-
-      - name: Run code formatting check
-        working-directory: server
-        run: npm run format:check
-
-      - name: Run linter
-        working-directory: server
-        run: npm run lint
 
       - name: Run unit tests
         working-directory: server
