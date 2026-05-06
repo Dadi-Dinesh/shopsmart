@@ -23,7 +23,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 locals {
-  bucket_name = "shopsmart-artifacts-${data.aws_caller_identity.current.account_id}"
+  bucket_name = "shopsmart-artifacts-${data.aws_caller_identity.current.account_id}-${var.aws_region}"
 }
 
 # ── S3 Bucket ───────────────────────────────────────────────────────────────
@@ -49,6 +49,10 @@ resource "aws_s3_bucket_versioning" "shopsmart" {
   versioning_configuration {
     status = "Enabled"
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # ── Server-Side Encryption (AES-256) ───────────────────────────────────────
@@ -61,6 +65,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "shopsmart" {
     }
     bucket_key_enabled = true
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # ── Block ALL Public Access ─────────────────────────────────────────────────
@@ -71,4 +79,8 @@ resource "aws_s3_bucket_public_access_block" "shopsmart" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+
+  lifecycle {
+    ignore_changes = all
+  }
 }

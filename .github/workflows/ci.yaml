@@ -130,14 +130,15 @@ jobs:
           
           # Fetch AWS Account ID for dynamic bucket name
           ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-          BUCKET_NAME="shopsmart-artifacts-${ACCOUNT_ID}"
+          REGION="${{ secrets.AWS_REGION }}"
+          BUCKET_NAME="shopsmart-artifacts-${ACCOUNT_ID}-${REGION}"
           echo "Using Bucket Name: ${BUCKET_NAME}"
 
           # S3
-          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket.shopsmart "${BUCKET_NAME}" || true
-          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket_versioning.shopsmart "${BUCKET_NAME}" || true
-          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket_server_side_encryption_configuration.shopsmart "${BUCKET_NAME}" || true
-          terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_s3_bucket_public_access_block.shopsmart "${BUCKET_NAME}" || true
+          terraform import -var="aws_region=${REGION}" aws_s3_bucket.shopsmart "${BUCKET_NAME}" || true
+          terraform import -var="aws_region=${REGION}" aws_s3_bucket_versioning.shopsmart "${BUCKET_NAME}" || true
+          terraform import -var="aws_region=${REGION}" aws_s3_bucket_server_side_encryption_configuration.shopsmart "${BUCKET_NAME}" || true
+          terraform import -var="aws_region=${REGION}" aws_s3_bucket_public_access_block.shopsmart "${BUCKET_NAME}" || true
           
           # ECR
           terraform import -var="aws_region=${{ secrets.AWS_REGION }}" aws_ecr_repository.shopsmart_server shopsmart-server || true
