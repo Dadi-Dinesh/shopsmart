@@ -32,7 +32,7 @@ jobs:
 
       - name: Upload client unit test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: client-unit-test-report
           path: client/unit-test-results.xml
@@ -44,7 +44,7 @@ jobs:
 
       - name: Upload client integration test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: client-integration-test-report
           path: client/integration-test-results.xml
@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload server unit test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: server-unit-test-report
           path: server/unit-test-results.xml
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload server integration test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: server-integration-test-report
           path: server/integration-test-results.xml
